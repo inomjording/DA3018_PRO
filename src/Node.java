@@ -1,3 +1,5 @@
 public class Node {
-    public Node() {}
+    public Node() {
+        System.out.println();
+    }
 }
