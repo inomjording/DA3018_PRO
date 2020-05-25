@@ -1,17 +1,21 @@
 import java.util.*;
 
 public class Graph {
-    ArrayList<LinkedList<Integer>> adjList = new ArrayList<>();
+    LinkedList<Integer>[] adjList = new LinkedList[1023];
 
     public Graph() {
     }
 
     private LinkedList<Integer> getVertex(int vertex) {
-        adjList.ensureCapacity(vertex + 1);
-        var list = adjList.get(vertex);
+        if (vertex >= adjList.length) { // stolen from ArrayList
+            adjList = Arrays.copyOf(adjList, adjList.length +  (adjList.length >> 1));
+        }
+
+        var list = adjList[vertex];
+
         if (list == null) {
             list = new LinkedList<>();
-            adjList.set(vertex, list);
+            adjList[vertex] = list;
         }
 
         return list;
@@ -23,16 +27,16 @@ public class Graph {
     }
 
     public Integer[] distance(Integer start) {
-        Integer[] distances = new Integer[adjList.size()];
+        Integer[] distances = new Integer[adjList.length];
         Arrays.fill(distances, -1);
         distances[start] = 0;
-        boolean[] visited = new boolean[adjList.size()];
+        boolean[] visited = new boolean[adjList.length];
         LinkedList<Integer> queue = new LinkedList<>();
         visited[start] = true;
         queue.add(start);
         while (queue.size() != 0) {
             int v = queue.poll();
-            for (var u : adjList.get(v)) {
+            for (var u : adjList[v]) {
                 if (!visited[u])
                 {
                     visited[u] = true;
@@ -47,7 +51,7 @@ public class Graph {
 
     public int diameter() {
         int diameter = 0;
-        for (int i = 0; i < adjList.size(); i++) {
+        for (int i = 0; i < adjList.length; i++) {
             Integer[] distances = distance(i);
             for (int j : distances) {
                 if (j > diameter) {
