@@ -1,3 +1,6 @@
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Graph {
@@ -62,6 +65,54 @@ public class Graph {
         return diameter;
     }
 
-    public static void main() {
+    public void degreeDistribution() throws FileNotFoundException {
+        var out = new PrintStream("distribution.txt");
+        for (int i = 0; i < vertexCount(); i++) {
+            out.println(i + " " + adjList[i].size());
+        }
+        out.close();
+    }
+
+    public int vertexCount() {
+        for (int i = 0; i < adjList.length; i++) {
+            if (adjList[i] == null) return i;
+        }
+        return adjList.length;
+    }
+
+    public int componentCount() {
+        int numComponents = 0;
+        int vertexCount = vertexCount();
+        int start = 0;
+        boolean[] visited = new boolean[vertexCount];
+        do {
+            markComponent(visited, start);
+            numComponents++;
+            start = findFirstFalse(visited);
+        } while(start != -1);
+        return numComponents;
+    }
+
+    private int findFirstFalse(boolean[] visited) {
+        for (int i = 0; i < visited.length; i++) {
+            if (!visited[i]) return i;
+        }
+        return -1;
+    }
+
+    public void markComponent(boolean[] visited, int start) {
+        LinkedList<Integer> queue = new LinkedList<>();
+        visited[start] = true;
+        queue.add(start);
+        while (queue.size() != 0) {
+            int v = queue.poll();
+            for (var u : adjList[v]) {
+                if (!visited[u])
+                {
+                    visited[u] = true;
+                    queue.add(u);
+                }
+            }
+        }
     }
 }
