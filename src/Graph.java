@@ -67,7 +67,8 @@ public class Graph {
 
     public void degreeDistribution() throws FileNotFoundException {
         var out = new PrintStream("distribution.txt");
-        for (int i = 0; i < vertexCount(); i++) {
+        int vertexCount = vertexCount();
+        for (int i = 0; i < vertexCount; i++) {
             out.println(i + " " + adjList[i].size());
         }
         out.close();
@@ -80,17 +81,16 @@ public class Graph {
         return adjList.length;
     }
 
-    public int componentCount() {
-        int numComponents = 0;
+    public Integer[] componentDistribution() {
         int vertexCount = vertexCount();
         int start = 0;
+        var list = new ArrayList<Integer>();
         boolean[] visited = new boolean[vertexCount];
         do {
-            markComponent(visited, start);
-            numComponents++;
+            list.add(markComponent(visited, start));
             start = findFirstFalse(visited);
         } while(start != -1);
-        return numComponents;
+        return list.toArray(new Integer[0]);
     }
 
     private int findFirstFalse(boolean[] visited) {
@@ -100,7 +100,8 @@ public class Graph {
         return -1;
     }
 
-    public void markComponent(boolean[] visited, int start) {
+    public int markComponent(boolean[] visited, int start) {
+        int totalNodes = 1;
         LinkedList<Integer> queue = new LinkedList<>();
         visited[start] = true;
         queue.add(start);
@@ -111,8 +112,10 @@ public class Graph {
                 {
                     visited[u] = true;
                     queue.add(u);
+                    totalNodes ++;
                 }
             }
         }
+        return totalNodes;
     }
 }
