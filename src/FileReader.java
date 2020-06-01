@@ -50,22 +50,23 @@ public class FileReader {
         return graph;
     }
 
-    public static void createNewFile(String[] args) throws IOException {
+    public static void createNewFile() throws IOException {
         var reader = new FileReader();
-        reader.transformFile("out/production/project/Spruce_fingerprint_2017-03-10_16.48.olp.m4");
+        reader.transformFile("Spruce_fingerprint_2017-03-10_16.48.olp.m4");
     }
 
     public static void main(String[] args) throws IOException {
+        createNewFile();
         long startTime = System.currentTimeMillis();
         var reader = new FileReader();
         System.out.println("Reading file");
-        var graph = reader.readFromFile("out/production/project/converted.txt");
-        //System.out.println("Calc degree distr");
-        //graph.degreeDistribution();
+        var graph = reader.readFromFile("converted.txt");
+        System.out.println("Calc degree distr");
+        graph.degreeDistribution();
         System.out.println("Calc comp distr");
         var componentDistribution = graph.componentDistribution();
-        System.out.println("Num components :" + componentDistribution.length);
-        System.out.println("Num vertices :" + graph.vertexCount());
+        System.out.println("Num components: " + componentDistribution.length);
+        System.out.println("Num vertices: " + graph.vertexCount());
         var elapsed = System.currentTimeMillis() - startTime;
         var out = new PrintStream("components.txt");
         for (Integer integer : componentDistribution) {
